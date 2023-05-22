@@ -1,0 +1,13 @@
+{
+  "name": "advanced-training-2023-05-31",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "^2.23.3"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-refresh": "^0.14.0"
+  }
+}

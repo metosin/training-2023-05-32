@@ -1,0 +1,22 @@
+{
+	log default {
+		output stdout
+		format console
+		level INFO
+		include http.log.access
+	}
+}
+http://localhost:8000 {
+	log {
+		level INFO
+		format console
+	}
+	handle /api/* {
+		reverse_proxy http://host.docker.internal:9000
+	}
+	handle {
+		root * /public
+		try_files {path} /index.html
+		file_server
+	}
+}

@@ -1,0 +1,17 @@
+{:deps   {:aliases [:dev :test]}
+ :builds {:web  {:target     :browser
+                 :output-dir "public/js"
+                 :asset-path "js"
+                 :modules    {:main {:entries [training.web.app]}}
+                 :dev        {:closure-defines {training.web.app/DEV true}}
+                 :release    {:closure-defines {training.web.app/DEV false}}
+                 :devtools   {:before-load training.web.app/stop
+                              :after-load  training.web.app/start}}
+          :node {:target     :node-library
+                 :exports    {:hello node/hello}
+                 :output-to  "target/node/index.js"
+                 :output-dir "target/node/js"}
+          :test {:target     :node-test
+                 :output-to  "target/test/index.js"
+                 :output-dir "target/test/js"
+                 :autorun    true}}}

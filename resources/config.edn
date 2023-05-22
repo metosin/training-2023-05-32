@@ -1,0 +1,17 @@
+{:db   #profile {:dev  {:dbtype   "postgres"
+                        :host     "localhost"
+                        :port     5432
+                        :dbname   "postgres"
+                        :username "postgres"
+                        :password "postgres"}
+                 :prod {:dbtype   "postgres"
+                        :host     "db"
+                        :port     5432
+                        :dbname   "postgres"
+                        :username #env POSTGRES_USERNAME
+                        :password #env POSTGRES_PASSWORD}}
+ :http {:host #profile {:prod "0.0.0.0"
+                        :dev  "localhost"}
+        :port 9000}
+ :api  {:mode #profile {:prod :prod
+                        :dev  :dev}}}
