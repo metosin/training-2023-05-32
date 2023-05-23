@@ -3,12 +3,12 @@
             [honey.sql :as sql]))
 
 
-(defn execute! [{tx :tx} query]
-  (jdbc/execute! tx (sql/format query)))
+(defn execute! [ctx query]
+  (jdbc/execute! (-> ctx :system :ds) (sql/format query)))
 
 
-(defn execute-one! [{tx :tx} query]
-  (jdbc/execute-one! tx (sql/format query)))
+(defn execute-one! [ctx query]
+  (jdbc/execute-one! (-> ctx :system :ds) (sql/format query)))
 
 
 (comment

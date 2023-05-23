@@ -15,7 +15,6 @@ Varmista että sinulla on seuraavat työkalut asennettuna:
 - Clojure
 
   - Seuraa asennusohjeet täältä: [https://clojure.org/guides/install_clojure](https://clojure.org/guides/install_clojure)
-  - Asennettu versio voi olla eri kuin yllä
 
 - NodeJS
 
@@ -53,13 +52,13 @@ Varmista että sinulla on seuraavat työkalut asennettuna:
 
   - Asennetut versiot voivat poiketa ylläolevasta jonkin verran
 
-## Esitehtävä projekti
+## Esitehtävä
 
 Varmistetaan vielä että kaikki toimii.
 
 - Kloonaa tämä projekti omalle koneellesi
   ```bash
-  git clone git@github.com:metosin/clojure-koulutus-2023-01-24-esitehtavat.git
+  git clone git@github.com:metosin/training-2023-05-32.git
   ```
 - Aja alustus
   ```bash

@@ -20,7 +20,10 @@
                 (if (= (:status resp) 200)
                   (set-session! {:status :ok
                                  :user   (-> resp :body :user)})
-                  (set-session! {:status :no}))))))
+                  (set-session! {:status :no}))))
+      (p/catch (fn [e]
+                 (js/console.error e "unexpected error from /api/session")
+                 (set-session! {:status :error})))))
 
 
 (defn login

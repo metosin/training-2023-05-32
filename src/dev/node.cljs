@@ -1,5 +1,5 @@
 (ns node
-  (:require [training.web.state :as state]))
+  (:require [clojure.string :as str]))
 
 
 (defn hello []
@@ -7,11 +7,18 @@
 
 
 (comment
-  (require '[training.web.http :as http])
+
   (require '[training.web.state :as state])
 
-  @state/app-state
-  (swap! state/app-state assoc :session nil)
-  (-> (http/GET "/api/hello")
-      (.then (fn [resp]
-               (println (pr-str resp))))))
+  (-> @state/app-state
+      :resource
+      :training.web.view.artist-page/artist
+      :body)
+
+
+
+
+
+
+  ;
+  )

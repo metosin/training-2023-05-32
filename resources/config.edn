@@ -1,13 +1,13 @@
 {:db   #profile {:dev  {:dbtype   "postgres"
                         :host     "localhost"
                         :port     5432
-                        :dbname   "postgres"
+                        :dbname   "musicbrainz"
                         :username "postgres"
                         :password "postgres"}
                  :prod {:dbtype   "postgres"
                         :host     "db"
                         :port     5432
-                        :dbname   "postgres"
+                        :dbname   "musicbrainz"
                         :username #env POSTGRES_USERNAME
                         :password #env POSTGRES_PASSWORD}}
  :http {:host #profile {:prod "0.0.0.0"

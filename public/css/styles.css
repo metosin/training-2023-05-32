@@ -40,10 +40,45 @@ header h1 {
   text-align: center;
 }
 
+nav {
+  border-bottom: 1px solid gray;
+  margin-bottom: 1em;
+}
+
 .copyright {
   margin-top: 4em;
-  padding-top: 0.5em;
+  padding-top: 20px;
   text-align: center;
   border-top: 1px solid gray;
   font-size: 60%;
+}
+
+
+.small {
+  font-size: 60%;
+}
+
+
+.artists-table tbody tr {
+  cursor: pointer;
+}
+
+
+.artist-albums {
+  margin-top: 1em;
+}
+
+
+.artist-album {
+  display: flex;
+  flex-flow: row;
+  gap: 1em;
+  margin-block-end: 1em;
+  cursor: pointer;
+}
+
+
+.artist-albums-art {
+  width: 100px;
+  height: 100px;
 }

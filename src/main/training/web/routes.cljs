@@ -1,22 +1,20 @@
-(ns training.web.routes
-  (:require [training.web.view.front-page  :refer [FrontPage]]
-            [training.web.view.about-page :refer [AboutPage]]
-            [training.web.view.item-page :refer [ItemPage]]
+(ns ^:dev/always training.web.routes
+  (:require [training.web.view.front-page :as front]
+            [training.web.view.about-page :as about]
             [training.web.view.artist-page :as artist]))
 
 
 (def routes
-  [["/" {:name ::frontpage 
-         :view FrontPage
-         :nav [0 "Home"]}] 
-   ["/artist" {:name ::artists
-               :view artist/ArtistsPage 
-               :nav [1 "Artists"]}]
-   ["/artist/:id" {:name ::artist 
-                   :view artist/ArtistPage}]
-   ["/about" {:name ::about 
-              :view AboutPage
-              :nav [2 "About"]}]
-   ["/item/:id" {:name ::item 
-                 :view ItemPage 
-                 :parameters {:path {:id :int}}}]])
+  [["/" {:name :frontpage
+         :view front/FrontPage
+         :nav  [0 "Home"]}]
+   ["/artist" {:name       :artists
+               :view       artist/ArtistsPage
+               :parameters {:query [:map [:search {:default ""} :string]]}
+               :nav        [1 "Artists"]}]
+   ["/artist/:id" {:name       :artist
+                   :view       artist/ArtistPage
+                   :parameters {:path [:map [:id :string]]}}]
+   ["/about" {:name :about
+              :view about/AboutPage
+              :nav  [2 "About"]}]])

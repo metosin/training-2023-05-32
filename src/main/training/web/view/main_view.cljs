@@ -20,6 +20,7 @@
        ($ nav/NavBar))
      (case session-status
        nil (d/div "Loading....")
+       :error (d/div "Error!")
        :no ($ login/LoginView)
        :ok ($ (-> current-route :data :view (or not-found/NotFoundPage)) {:route current-route}))
      (d/footer
