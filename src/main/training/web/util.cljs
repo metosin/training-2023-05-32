@@ -8,3 +8,5 @@
           name))
 
 
+(defn now []
+  (js/Date.now))

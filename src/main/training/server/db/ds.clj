@@ -7,37 +7,17 @@
 
 
 (defn make-datasource [db-spec]
+  (log/info "DB - Creating connection pool")
   (let [ds (next.jdbc.connection/->pool HikariDataSource db-spec)]
-    ; Ensure we have connectivity to DB
     (with-open [conn (jdbc/get-connection ds)]
-      (log/debug "Testing DB connection...")
       (jdbc/execute-one! conn ["select now()"]))
-    (log/info "DB pool ready")
+    (log/info "DB - Connection pool ready")
     ds))
 
 
 (defn close-datasource [ds]
+  (log/info "DB - Closing connection pool")
   (when ds
-    (-> (jdbc/get-datasource ds)
-        (.close))
-    (log/info "DB pool stopped")))
-
-
-(comment
-
-  (defn add-job
-    ([ds command payload]
-     (jdbc/execute! ds ["select graphile_worker.add_job(?, ?)" command payload]))
-    ([ds command payload queue]
-     (jdbc/execute! ds ["select graphile_worker.add_job(?, ?, ?)" command payload queue])))
-
-  (jdbc/with-transaction [tx (-> @user/system :ds)]
-    (add-job tx "pause" {:delay 2000} "foo")
-    (add-job tx "echo" {:foo "bar 1"} "foo")
-    (add-job tx "pause" {:delay 3000} "foo")
-    (add-job tx "echo" {:foo "bar 2"} "foo")
-    (add-job tx "pause" {:delay 3000} "foo")
-    (add-job tx "echo" {:foo "bar 3"} "foo"))
-
-  ;
-  )
+    (let [pool (jdbc/get-datasource ds)]
+      (.close ^HikariDataSource pool)))
+  (log/info "DB - Connection pool closed"))

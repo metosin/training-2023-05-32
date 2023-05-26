@@ -28,7 +28,7 @@
         {:role "list"}
         (d/summary
          {:aria-haspopup "listbox"}
-         user)
+         (get user "fullname"))
         (d/ul
          {:role "listbox"}
          (d/li (d/a {:on-click session/logout} "Logout"))))))))

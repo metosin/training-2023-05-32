@@ -4,7 +4,7 @@
 
            aero/aero                              {:mvn/version "1.1.6"}
            org.babashka/sci                       {:mvn/version "0.7.39"}
-           funcool/promesa                        {:mvn/version "10.0.594"}
+           funcool/promesa                        {:mvn/version "11.0.671"}
            clj-statecharts/clj-statecharts        {:mvn/version "0.1.7"}
 
            lilactown/helix                        {:mvn/version "0.1.10"}
@@ -15,6 +15,7 @@
            metosin/jsonista                       {:mvn/version "0.3.7"}
            com.cognitect/transit-clj              {:mvn/version "1.0.333"}
            com.cognitect/transit-cljs             {:mvn/version "0.8.280"}
+           com.taoensso/nippy                     {:mvn/version "3.2.0"}
 
            ring/ring-core                         {:mvn/version "1.10.0"}
            metosin/malli                          {:mvn/version "0.11.0"}
@@ -30,7 +31,8 @@
            com.github.seancorfield/next.jdbc      {:mvn/version "1.3.874"}
            com.layerware/hugsql-core              {:mvn/version "0.5.3"}
            com.layerware/hugsql-adapter-next-jdbc {:mvn/version "0.5.3"}
-           com.github.seancorfield/honeysql       {:mvn/version "2.4.1026"}
+           com.github.seancorfield/honeysql       {:mvn/version "2.4.1033"}
+           redis.clients/jedis                    {:mvn/version "4.3.1"}
 
            org.clojure/tools.logging              {:mvn/version "1.2.4"}
            ch.qos.logback/logback-classic         {:mvn/version "1.4.7"}
@@ -49,7 +51,7 @@
                         :jvm-opts    ["-Dmode=dev"]}
 
            :test       {:extra-paths ["src/test"]
-                        :extra-deps  {lambdaisland/kaocha        {:mvn/version "1.83.1314"}
+                        :extra-deps  {lambdaisland/kaocha        {:mvn/version "1.84.1335"}
                                       nubank/matcher-combinators {:mvn/version "3.8.5"}}}
 
            :watch-test {:exec-fn   kaocha.runner/exec-fn

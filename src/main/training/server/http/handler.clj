@@ -10,7 +10,10 @@
              [reitit.ring.coercion :as rrc]
              [reitit.coercion.malli]
              [reitit.ring.middleware.muuntaja]
-             [reitit.ring.middleware.exception :as exception]))
+             [reitit.ring.middleware.exception :as exception]
+             [training.server.http.cache :as cache]
+             [training.server.redis.pool :as redis]
+             [training.server.api.session.middleware :as session]))
 
 
 (defn- wrap-system [handler system]
@@ -27,12 +30,13 @@
 
 
 
-(defn- make-handler [routes system]
+(defn make-handler [routes system]
   (ring/ring-handler
    (ring/router routes
                 {:data {:muuntaja   muuntaja.core/instance
                         :coercion   reitit.coercion.malli/coercion
-                        :middleware [ring.middleware.params/wrap-params
+                        :middleware [cache/cache-middleware
+                                     ring.middleware.params/wrap-params
                                      ring.middleware.cookies/wrap-cookies
                                      reitit.ring.middleware.muuntaja/format-middleware
                                      rrc/coerce-exceptions-middleware
@@ -41,17 +45,11 @@
                                      (exception/create-exception-middleware (assoc exception/default-handlers
                                                                                    ::exception/wrap
                                                                                    exception-handler))
-                                     [wrap-system system]]}})
+                                     [wrap-system system]
+                                     [redis/redis-middleware]
+                                     [session/session-middleware]]}})
    (constantly (-> {:type    :error
                     :message "route not found"}
                    (json/write-value-as-string)
                    (resp/not-found)
                    (update :headers assoc "content-type" "application/json")))))
-
-
-(defn handler [{:keys [mode]} routes-var system]
-  (case mode
-    :dev (do (log/warn "creating reloading ring handler")
-             (ring/reloading-ring-handler (fn [] (make-handler @routes-var system))))
-    :prod (do (log/info "creating ring handler")
-              (make-handler @routes-var system))))

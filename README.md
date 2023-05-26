@@ -94,3 +94,10 @@ Tietomalli on seuraavan muotoinen:
 - [Awesome Clojure libs also](https://github.com/razum2um/awesome-clojure)
 - [Awesome ClojureScript libs](https://github.com/hantuzun/awesome-clojurescript)
 - [Metosin in GitHub](https://github.com/metosin)
+
+## TODO
+
+[ ] - Inventory DB
+[ ] - Shopping cart, Redis
+[ ] - Tests
+[ ] - I/O out

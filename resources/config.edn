@@ -1,17 +1,18 @@
-{:db   #profile {:dev  {:dbtype   "postgres"
-                        :host     "localhost"
-                        :port     5432
-                        :dbname   "musicbrainz"
-                        :username "postgres"
-                        :password "postgres"}
-                 :prod {:dbtype   "postgres"
-                        :host     "db"
-                        :port     5432
-                        :dbname   "musicbrainz"
-                        :username #env POSTGRES_USERNAME
-                        :password #env POSTGRES_PASSWORD}}
- :http {:host #profile {:prod "0.0.0.0"
-                        :dev  "localhost"}
-        :port 9000}
- :api  {:mode #profile {:prod :prod
-                        :dev  :dev}}}
+{:db    #profile {:dev  {:dbtype   "postgres"
+                         :host     "localhost"
+                         :port     5432
+                         :dbname   "musicbrainz"
+                         :username "postgres"
+                         :password "postgres"}
+                  :prod {:dbtype   "postgres"
+                         :host     "db"
+                         :port     5432
+                         :dbname   "musicbrainz"
+                         :username #env POSTGRES_USERNAME
+                         :password #env POSTGRES_PASSWORD}}
+ :http  #profile {:prod {:host "0.0.0.0"
+                         :port 8000}
+                  :dev  {:host "localhost"
+                         :port 9000}}
+ :redis {:host "localhost"
+         :port 6379}}

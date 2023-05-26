@@ -53,6 +53,16 @@ psql +args='':
          -d $POSTGRES_DB                                       \
          {{ args }}
 
+# Run Flyway migration command (migrate, clean, info, ...):
+flyway +args='':
+  @docker run                                                  \
+    --rm                                                       \
+    -v $(pwd)/resources/migration/sql:/flyway/sql              \
+    -v $(pwd)/resources/migration/conf:/flyway/conf            \
+    --network {{ project }}_default                            \
+    flyway/flyway:9                                            \
+    {{ args }}
+
 
 # Check for outdated deps
 outdated:

@@ -17,3 +17,4 @@ node_modules/
 /public/js
 *.log
 *.swp
+/local.session.sql

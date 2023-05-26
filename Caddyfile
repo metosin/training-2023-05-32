@@ -2,11 +2,35 @@
 	log default {
 		output stdout
 		format console
-		level INFO
+		level WARN
 		include http.log.access
 	}
 }
+(logs) {
+	log {
+		level WARN
+		format console
+	}
+}
+(mustheaders) {
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+	}
+}
+(caching) {
+	header {
+		Cache-Control "public, max-age=604800, immutable"
+	}
+}
+(no_caching) {
+	header {
+		Cache-Control "no-store"
+	}
+}
 http://localhost:8000 {
+	import mustheaders
+	import logs
 	log {
 		level INFO
 		format console
@@ -14,7 +38,11 @@ http://localhost:8000 {
 	handle /api/* {
 		reverse_proxy http://host.docker.internal:9000
 	}
+	handle /cover/* {
+		reverse_proxy http://covers:8000
+	}
 	handle {
+		import no_caching
 		root * /public
 		try_files {path} /index.html
 		file_server

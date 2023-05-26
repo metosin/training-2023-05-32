@@ -8,7 +8,7 @@
 
 
 (defnc LoginView [_]
-  (let [[data set-data]   (hooks/use-state {:user     ""
+  (let [[data set-data]   (hooks/use-state {:username ""
                                             :password ""})
         [state set-state] (hooks/use-state :ready)]
     (d/form
@@ -22,15 +22,15 @@
      (d/div
       {:class "grid"}
       (d/label
-       {:for "user"}
+       {:for "username"}
        "User:"
-       (d/input {:id           "user"
-                 :name         "user"
+       (d/input {:id           "username"
+                 :name         "username"
                  :type         "text"
                  :placeholder  "Username"
                  :required     true
-                 :value        (:user data)
-                 :on-change    (fn [e] (set-data assoc :user (-> e .-target .-value)))
+                 :value        (:username data)
+                 :on-change    (fn [e] (set-data assoc :username (-> e .-target .-value)))
                  :aria-invalid (if (= state :fail) true nil)}))
       (d/label
        {:for "password"}
@@ -45,6 +45,6 @@
                  :aria-invalid (if (= state :fail) true nil)})))
      (d/button {:type      "submit"
                 :aria-busy (= state :pending)
-                :disabled  (or (str/blank? (:user data))
+                :disabled  (or (str/blank? (:username data))
                                (str/blank? (:password data)))}
                "Login"))))

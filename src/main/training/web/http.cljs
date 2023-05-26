@@ -63,16 +63,24 @@
                 (fetch-opts opts))
       (p/then (fn [^js resp]
                 (let [headers      (headers->map (j/get resp :headers))
-                      content-type (get headers "content-type")]
-                  (when-not (str/starts-with? content-type transit-content-type)
-                    (http-error! resp opts (str "unsupported content-type: " content-type)))
-                  (-> (j/call resp :text)
-                      (p/then read-transit)
-                      (p/then (fn [body]
-                                {:status  (j/get resp :status)
-                                 :headers headers
-                                 :body    body
-                                 ::request opts}))))))))
+                      content-type (get headers "content-type" "")]
+                  (if (str/starts-with? content-type transit-content-type)
+                    (-> (j/call resp :text) 
+                        (p/then read-transit) 
+                        (p/then (fn [body] 
+                                  {:status  (j/get resp :status) 
+                                   :headers headers 
+                                   :body    body ::request opts})))
+                    (do (js/console.warn "unsupported content-type:" 
+                                         content-type 
+                                         "from"
+                                         (-> opts :method (name) (str/upper-case))
+                                         (-> opts :uri))
+                        (-> (j/call resp :text) 
+                        (p/then (fn [body] 
+                                  {:status  (j/get resp :status) 
+                                   :headers headers 
+                                   :body    body ::request opts}))))))))))
 
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}

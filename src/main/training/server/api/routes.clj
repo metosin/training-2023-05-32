@@ -1,7 +1,7 @@
 (ns training.server.api.routes
   (:require [ring.util.http-response :as resp]
-            [training.server.api.session :as session]
-            [training.server.api.music :as music]))
+            [training.server.api.session.routes :as session]
+            [training.server.domain.music :as music]))
 
 
 (def routes
