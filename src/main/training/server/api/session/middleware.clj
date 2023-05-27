@@ -1,12 +1,13 @@
 (ns training.server.api.session.middleware
   (:require [clojure.tools.logging :as log]
             [ring.util.http-response :as resp]
-            [training.server.domain.account :as account]
+            [training.server.domain.account.core :as account]
+            [training.server.api.session :as session]
             [training.server.api.session.core :as core]))
 
 
 (defn- cookie-session [req]
-  (when-let [session-key (core/get-session-key req)]
+  (when-let [session-key (core/get-cookie-session-key req)]
     (core/get-session req session-key)))
 
 
@@ -23,13 +24,13 @@
   (fn [req]
     (if-let [session (or (cookie-session req)
                          (apikey-session req))]
-      (handler (assoc req :training.server.api.session/session session))
+      (handler (assoc req ::session/session session))
       (handler req))))
 
 
 (defn require-session-middleware [handler]
   (fn [req]
-    (when-not (contains? req :training.server.api.session/session)
+    (when-not (contains? req ::session/session)
       (log/warn "request without session rejected")
       (resp/forbidden! {:message "session required"}))
     (handler req)))
@@ -40,7 +41,7 @@
                          #{(name required-role)}
                          (apply set (map name required-role)))]
     (fn [req]
-      (let [user-role (get-in req [:training.server.api.session/session "role"])]
+      (let [user-role (get-in req [::session/session "role"])]
         (when-not (required-roles user-role)
           (log/warnf "request without role rejected, required: %s user: %s"
                      (pr-str required-roles)

@@ -1,6 +1,5 @@
 -- Find artist by artist ID
 -- :name get-artist-by-id :? :1
--- :doc Get character by id
 SELECT 
   artist.id, 
   artist.name, 
@@ -24,7 +23,7 @@ FROM
 INNER JOIN 
   mb.album ON album.artist = artist.id
 WHERE 
-  STARTS_WITH(artist.iname, :artist-name)
+  artist.iname LIKE '%' || :artist-name || '%'
 GROUP BY 
   artist.id, 
   artist.name, 

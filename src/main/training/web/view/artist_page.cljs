@@ -1,42 +1,44 @@
 (ns training.web.view.artist-page
-  (:require [helix.core :as hx :refer [defnc <>]]
+  (:require [helix.core :as hx :refer [$ defnc <>]]
             [helix.dom :as d]
             [reitit.frontend.easy :as rfe]
+            [training.web.util :refer [icon]]
             [training.web.use-debounce :refer [use-debounce]]
-            [training.web.use-resource :refer [use-resource]]))
+            [training.web.use-resource :as resource :refer [use-resource]]))
 
 
 (defnc ArtistsPage [match]
   (let [search                (-> match :route :parameters :query :search)
         [search' set-search'] (use-debounce search)
-        resource              (use-resource ::artists "/api/music/artist" {:query {:name search'}})]
+        artist                (use-resource ::artists "/api/music/artist" {:query {:name search'}})]
     (d/div
-     (d/input {:type      "text"
-               :value     search
-               :on-change (fn [^js e]
-                            (let [search (-> e .-target .-value)]
-                              (rfe/replace-state :artists nil {:search search})
-                              (set-search' search)))})
-     (case (:status resource)
+     (d/input {:type        "text"
+               :value       search
+               :placeholder "Artist name"
+               :auto-focus  true
+               :on-change   (fn [^js e]
+                              (let [search (-> e .-target .-value)]
+                                (rfe/replace-state :artists nil {:search search})
+                                (set-search' search)))})
+     (case (:status artist)
        :pending (d/div "Loading...")
        :error (d/div "Error!")
        (:ok :refreshing) (d/table
-                          {:role  "grid"
-                           :class "artists-table"}
+                          {:role  "grid"}
                           (d/thead
                            (d/tr
                             (d/th "Artist")
                             (d/th "Info")
                             (d/th "Albums")))
                           (d/tbody
-                           (for [artist (:body resource)
+                           (for [artist (:body artist)
                                  :let [{:artist/keys [id name disambiguation]} artist]]
-                             (d/tr
-                              {:key      id
-                               :on-click (fn [_] (rfe/push-state :artist {:id id}))}
-                              (d/td name)
-                              (d/td disambiguation)
-                              (d/td (:albums artist))))))))))
+                             (d/tr {:key      id
+                                    :class    "cursor-pointer"
+                                    :on-click (fn [_] (rfe/push-state :artist {:id id}))}
+                                   (d/td name)
+                                   (d/td disambiguation)
+                                   (d/td (:albums artist))))))))))
 
 
 (defn format-released [^js released]
@@ -67,29 +69,43 @@
 
 (defnc ArtistPage [match]
   (let [artist-id (-> match :route :parameters :path :id)
-        resource  (use-resource ::artist "/api/music/artist/:artist-id" {:params {:artist-id artist-id}})]
+        artist    (use-resource ::artist "/api/music/artist/:artist-id" {:params {:artist-id artist-id}})
+        favs      (use-resource ::favs "/api/account/self/like" {:parser set})]
     (d/div
      {:class "artist"}
-     (case (:status resource)
+     (case (:status artist)
        :pending (d/div "Loading...")
        :error (d/div "Error!")
        (:ok :refreshing)
-       (let [{:artist/keys [name disambiguation]} (:body resource)]
+       (let [{:artist/keys [name disambiguation]} (:body artist)]
          (<> (d/div (d/b name))
              (d/div (d/i disambiguation))
              (d/div
-              {:class "artist-albums"}
-              (for [album (:artist/albums (:body resource))
+              {:class ["grid-auto-cols" "gird-auto-cols-200" "gap-10"]}
+              (for [album (:artist/albums (:body artist))
                     :let [{:album/keys [id name released]} album
-                          {:keys [tracks length price]} album]]
-                (d/div {:class    "artist-album"
+                          {:keys [tracks length price]} album
+                          fav? (contains? (:body favs) id)]]
+                (d/div {:class    ["cursor-pointer" "flex-direction-column" "flex-align-items-stretch"]
                         :key      id
-                        :on-click (fn [_] (rfe/push-state :artist {:id id}))}
+                        :on-click (fn [e]
+                                    (.preventDefault e)
+                                    (println "ALBUM: click:" e)
+                                    ;; TODO: Navigate to album
+                                    #_(rfe/push-state :artist {:id id}))}
+                       (d/div {:class ["flex-align-item-center" "gap-05"]}
+                              (d/b {:class "clamp-text"} name)
+                              (d/a {:on-click (fn [e]
+                                                (.preventDefault e)
+                                                (.stopPropagation e)
+                                                (resource/mutate favs {:uri    "/api/account/self/like/:album-id"
+                                                                       :params {:album-id id}
+                                                                       :body   {:like (not fav?)}}))}
+                                   ($ icon {:name  "favorite"
+                                            :class ["hoverable" (when fav? "fav")]})))
                        (d/img {:src   (str "/cover/" id ".jpeg")
                                :class "artist-albums-art"})
-                       (d/div
-                        (d/div (d/b name))
-                        (d/div {:class "small"} "Released " (format-released released))
-                        (d/div {:class "small"} "Tracks: " tracks)
-                        (d/div {:class "small"} "Play time: " (format-playtime length))
-                        (d/div {:class "small"} "Price: " (format-price price))))))))))))
+                       (d/div {:class "small"} "Released " (format-released released))
+                       (d/div {:class "small"} "Tracks: " tracks)
+                       (d/div {:class "small"} "Play time: " (format-playtime length))
+                       (d/div {:class "small"} "Price: " (format-price price)))))))))))

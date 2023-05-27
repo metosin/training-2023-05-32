@@ -5,16 +5,20 @@
 
 
 (def routes
-  [["/" {:name :frontpage
-         :view front/FrontPage
-         :nav  [0 "Home"]}]
+  [["/" {:name  :frontpage
+         :view  front/FrontPage
+         :class "nav-home"
+         :nav   {:name  "Epe's"
+                 :index 0}}]
    ["/artist" {:name       :artists
                :view       artist/ArtistsPage
                :parameters {:query [:map [:search {:default ""} :string]]}
-               :nav        [1 "Artists"]}]
+               :nav        {:name  "Artists"
+                            :index 1}}]
    ["/artist/:id" {:name       :artist
                    :view       artist/ArtistPage
                    :parameters {:path [:map [:id :string]]}}]
    ["/about" {:name :about
               :view about/AboutPage
-              :nav  [2 "About"]}]])
+              :nav  {:name  "About"
+                     :index 2}}]])

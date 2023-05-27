@@ -1,7 +1,7 @@
 (ns training.server.api.session.core
   (:require [ring.util.http-response :as resp]
             [training.server.redis.core :as redis]
-            [training.server.domain.account :as account])
+            [training.server.domain.account.core :as account])
   (:import (java.time Duration)))
 
 
@@ -13,19 +13,21 @@
 ;;
 
 
-(defn get-session-key [req]
+(defn get-cookie-session-key [req]
   (-> req :cookies (get "session") :value))
 
 
 (defn set-session-cookie [resp value]
   (assoc resp :cookies {"session" {:value     value
-                                   :max-age   (.toSeconds session-expiration)
+                                   :path      "/"
                                    :http-only true
-                                   :same-site :strict}}))
+                                   :same-site :strict
+                                   :max-age   (.toSeconds session-expiration)}}))
 
 
 (defn clear-session-cookie [resp]
   (assoc resp :cookies {"session" {:value     ""
+                                   :path      "/"
                                    :http-only true
                                    :same-site :strict
                                    :expires   "Thu, 01 Jan 1970 00:00:00 GMT"}}))
@@ -78,7 +80,7 @@
 
 
 (defn check-session [req]
-  (if-let [user-info (get-session req (get-session-key req))]
+  (if-let [user-info (get-session req (get-cookie-session-key req))]
     (resp/ok {:user user-info})
     (resp/forbidden {:message "no session found"})))
 
@@ -96,12 +98,12 @@
 
 
 (defn logout-on-post [req]
-  (remove-session req (get-session-key req))
+  (remove-session req (get-cookie-session-key req))
   (-> (resp/ok {:message "logout"})
       (clear-session-cookie)))
 
 
 (defn logout-on-get [req]
-  (remove-session req (get-session-key req))
+  (remove-session req (get-cookie-session-key req))
   (-> (resp/found "/")
       (clear-session-cookie)))

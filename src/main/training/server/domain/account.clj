@@ -1,34 +1,55 @@
 (ns training.server.domain.account
-  (:require [training.server.db.honey :as sql]))
+  (:require [ring.util.http-response :as resp]
+            [training.server.db.tx :as tx]
+            [training.server.db.hug :as hugsql]
+            [training.server.api.session :as session]
+            [training.server.api.session.middleware :as sm]))
 
 
-(defn get-account-by-id [ctx account-id]
-  (sql/execute-one! ctx {:select [:account/id :account/username :account/fullname :account/role]
-                         :from   [:epes.account]
-                         :where  [:= :account/id account-id]}))
+(hugsql/register-domain :training.server.domain.account)
 
 
-(defn find-account-by-username-password [ctx username password]
-  (sql/execute-one! ctx {:select [:account/id :account/username :account/fullname :account/role]
-                         :from   [:epes.account]
-                         :where  [:and
-                                  [:= :account/username username]
-                                  [:= :account/password [:crypt password :account/password]]]}))
+(defn get-account-id [req]
+  (println "get-account-id:\n"
+           "Request:\n" (pr-str (get-in req [:parameters :path :account-id]))
+           "Session:\n" (pr-str (::session/session req)))
+  (let [account-id (get-in req [:parameters :path :account-id])]
+    (if (= account-id "self")
+      (get (::session/session req) "id")
+      account-id)))
 
 
-(defn find-account-by-apikey [ctx apikey]
-  (sql/execute-one! ctx {:select [:account/id :account/username :account/fullname :account/role]
-                         :from   [:epes.account]
-                         :join   [:epes.apikey [:= :apikey/account :account/id]]
-                         :where  [:and
-                                  [:= :apikey/apikey apikey]]}))
+;;
+;; Handlers:
+;;
 
 
-(comment
+(defn get-fav-by-account-id [req]
+  (let [account-id (get-account-id req)]
+    ; TODO: assert calling user is same as account-id, OR caller is admin
+    (->> (hugsql/execute! req ::get-fav-by-account-id {:account-id account-id})
+         (map :fav/target)
+         (resp/ok))))
 
-  (let [ctx    {:system {:ds (:ds user/system)}}
-        apikey "james"]
-    (find-account-by-apikey ctx apikey))
 
-  ;
-  )
+(defn update-like [req]
+  (let [account-id (get-account-id req)
+        target-id  (get-in req [:parameters :path :target-id])
+        like?      (get-in req [:parameters :body :like])]
+    (hugsql/execute! req (if like? ::add-fav ::remove-fav) {:account-id account-id
+                                                            :target-id  target-id})
+    (resp/ok)))
+
+
+(def routes
+  ["/:account-id" {:middleware [sm/require-session-middleware]}
+   ["/like"
+    ["" {:parameters {:path [:map [:account-id :string]]}
+         :get        {:handler get-fav-by-account-id}}]
+    ["/:target-id" {:middleware [tx/with-tx-middleware]
+                    :post       {:parameters {:path [:map
+                                                     [:account-id :string]
+                                                     [:target-id :string]]
+                                              :body [:map
+                                                     [:like :boolean]]}
+                                 :handler    update-like}}]]])

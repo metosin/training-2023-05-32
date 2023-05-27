@@ -31,7 +31,7 @@
       (+ now default-max-age))))
 
 
-(defn refresh-resource! [{:keys [uri params query etag key]
+(defn refresh-resource! [{:keys [uri params query parser etag key]
                           :as   resource}]
   (-> (http/request {:method  :get
                      :uri     (apply-uri-params uri params)
@@ -43,7 +43,10 @@
                        (case (:status resp)
                          200 {:status    :ok
                               :etag      (get-in resp [:headers "etag"])
-                              :body      (:body resp)
+                              :body      (let [body (:body resp)]
+                                           (if parser
+                                             (parser body)
+                                             body))
                               :error     nil
                               :refreshed (u/now)
                               :ttl       (ttl resp)}
@@ -69,22 +72,22 @@
 
 (defn use-resource
   ([id uri] (use-resource id uri nil))
-  ([id uri {:keys [params query]}]
+  ([id uri {:keys [params query parser]}]
    (let [now                     (u/now)
-         [resource set-resource] (-> (swap! state/app-state update-in [:resource id]
+         resource                (-> (swap! state/app-state update-in [:resource id]
                                             (fn [resource]
                                               (cond
                                                 ; New reqource request:
                                                 (nil? resource)
-                                                (let [resource {:key      id
-                                                                :uri      uri
-                                                                :params   params
-                                                                :query    query
-                                                                :status   :pending
-                                                                :created  (u/now)
-                                                                :ttl      0
-                                                                :refcount 0}]
-                                                  (refresh-resource! resource))
+                                                (refresh-resource! {:key      id
+                                                                    :uri      uri
+                                                                    :params   params
+                                                                    :query    query
+                                                                    :parser   parser
+                                                                    :status   :pending
+                                                                    :created  now
+                                                                    :ttl      0
+                                                                    :refcount 0})
 
                                                 ; Coordinates changed:
                                                 (not (and (= uri (:uri resource))
@@ -96,18 +99,19 @@
                                                            :params params
                                                            :query  query
                                                            :ttl    0)
+                                                    ;; TODO: cancel pending refreshs
                                                     (refresh-resource!))
 
-                                                ; TTL expired and not refreshed in 10secs
+                                                ; TTL expired and not already refrshing
                                                 (and (> now (:ttl resource))
-                                                     (> now (+ (:refreshed resource) 10000)))
+                                                     (not (#{:pending :refreshing} (:status resource))))
                                                 (-> (assoc resource :status :refreshing)
                                                     (refresh-resource!))
 
                                                 :else
                                                 resource)))
-                                     (get-in [:resource id])
-                                     (hooks/use-state))]
+                                     (get-in [:resource id]))
+         [resource set-resource] (hooks/use-state resource)]
      (hooks/use-effect
       :once
       (do (swap! state/app-state update-in [:resource id :refcount] inc)
@@ -125,3 +129,17 @@
             (remove-watch state/app-state id)
             (swap! state/app-state update-in [:resource id :refcount] dec))))
      resource)))
+
+
+(defn mutate [resource {:keys [method uri params query body]}]
+  ;; TODO: cancel pending refreshs
+  (-> (http/request {:method (or method :post)
+                     :uri    (apply-uri-params (or uri (:uri resource))
+                                               (or params (:uri resource)))
+                     :query  (or query (:query resource))
+                     :body   body})
+      (p/then (fn [resp]
+                (when (= 200 (:status resp))
+                  ;; TODO: cancel pending refreshs
+                  (-> (assoc resource :status :refreshing)
+                      (refresh-resource!)))))))

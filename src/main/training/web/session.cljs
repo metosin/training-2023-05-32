@@ -19,7 +19,7 @@
       (p/then (fn [resp]
                 (if (= (:status resp) 200)
                   (set-session! {:status :ok
-                                 :user   (-> resp :body :user)})
+                                 :user   (:body resp)})
                   (set-session! {:status :no}))))
       (p/catch (fn [e]
                  (js/console.error e "unexpected error from /api/session")
@@ -35,7 +35,7 @@
        (p/then (fn [resp]
                  (if (= (:status resp) 200)
                    (do (set-session! {:status :ok
-                                      :user   (-> resp :body :user)})
+                                      :user   (:body resp)})
                        {:success? true})
                    (do (set-session! {:status :no})
                        {:success? false

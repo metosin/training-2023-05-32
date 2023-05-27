@@ -14,7 +14,7 @@ create extension if not exists pgcrypto schema public;
 
 
 create table epes.account (
-  id              serial not null primary key,
+  id              text not null primary key default gen_random_uuid()::text,
   username        text not null unique,
   password        text not null,
   fullname        text not null,

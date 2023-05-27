@@ -3,9 +3,13 @@
             [helix.dom :as d]))
 
 
-(defnc icon [{:keys [name]}]
-  (d/span {:class "material-symbols-outlined"}
-          name))
+(defnc icon [{:keys [name class style]}]
+  (let [class (into ["material-symbols-outlined" "icon"] (if (sequential? class)
+                                                           class
+                                                           [class]))]
+    (d/span {:class class
+             :style style}
+            name)))
 
 
 (defn now []
