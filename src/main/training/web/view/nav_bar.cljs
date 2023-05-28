@@ -19,7 +19,12 @@
     (d/nav
      (d/ul
       (for [{:keys [name data nav]} nav-routes]
-        (d/li {:key name} (d/a {:href (rfe/href name data)} (:name nav)))))
+        (d/li {:key name} (d/a {:href (rfe/href name data)}
+                               (let [{:keys [image label]} nav]
+                                 (if image
+                                   (d/img {:src   image
+                                           :style {:max-height "2.5em"}})
+                                   label))))))
      (when user
        (d/ul
         (d/li

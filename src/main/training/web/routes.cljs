@@ -8,17 +8,17 @@
   [["/" {:name  :frontpage
          :view  front/FrontPage
          :class "nav-home"
-         :nav   {:name  "Epe's"
+         :nav   {:image "/image/epes-logo.png"
                  :index 0}}]
    ["/artist" {:name       :artists
                :view       artist/ArtistsPage
                :parameters {:query [:map [:search {:default ""} :string]]}
-               :nav        {:name  "Artists"
+               :nav        {:label "Artists"
                             :index 1}}]
    ["/artist/:id" {:name       :artist
                    :view       artist/ArtistPage
                    :parameters {:path [:map [:id :string]]}}]
    ["/about" {:name :about
               :view about/AboutPage
-              :nav  {:name  "About"
+              :nav  {:label "About"
                      :index 2}}]])

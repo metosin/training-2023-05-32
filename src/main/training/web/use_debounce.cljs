@@ -7,8 +7,8 @@
 
 
 (defn use-debounce
-  ([value] (use-debounce value doherty-threshold))
+  ([value] (use-debounce value nil))
   ([value treshold]
    (let [[value set-value] (hooks/use-state value)
-         debounced         (hooks/use-memo :once (debounce set-value treshold))]
+         debounced         (hooks/use-memo :once (debounce set-value (or treshold doherty-threshold)))]
      [value debounced])))

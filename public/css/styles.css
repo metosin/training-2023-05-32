@@ -1,3 +1,8 @@
+/*
+ * Base setup:
+ */
+
+
 :root {
   --font-family: "Open sans", sans-serif;
   color-scheme: light dark;
@@ -23,6 +28,13 @@ body {
 }
 
 
+main {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+
 img, picture, video, canvas, svg {
   display: block;
   max-width: 100%;
@@ -44,95 +56,86 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 
-main {
-  min-height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-}
-
-
-header h1 {
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
-nav {
-  border-bottom: 1px solid gray;
-  margin-bottom: 1em;
-}
-
-footer {
-  margin-top: 1em;
-  padding-top: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-  border-top: 1px solid gray;
-  font-size: 60% !important;
-}
-
-
-.small {
-  font-size: 60%;
-}
-
 /*
  * Utils:
  */
 
- .gap-10 {
+
+.gap-1em {
   gap: 1em;
 }
 
-.gap-05 {
+
+.gap-1em-2em {
+  gap: 1em 2em;
+}
+
+
+.gap-2em-1em {
+  gap: 2em 1em;
+}
+
+
+.gap-05em {
   gap: 0.5em;
 }
+
 
 /*
  * Flex utils:
  */
  
+
 [class*="flex-"] {
   display: flex;
 }
 
+
 .flex-direction-row { flex-direction: row; }
 .flex-direction-column { flex-direction: column; }
+
 
 .flex-justify-content-flex-start { justify-content: flex-start; }
 .flex-justify-content-flex-end { justify-content: flex-end; }
 .flex-justify-content-center { justify-content: center; }
+
 
 .flex-align-items-flex-start { align-items: flex-start; }
 .flex-align-items-flex-end { align-items: flex-end; }
 .flex-align-items-center { align-items: center; }
 .flex-align-items-stretch { align-items: stretch; }
 
+
 /*
  * Grid utils:
  */
 
- [class*="grid-"] {
+
+[class*="grid-"] {
   display: grid;
 }
 
 
-.grid-auto-cols {
-  --min-width: 300px;
-  grid-template-columns: repeat(auto-fit, minmax(min(var(--min-width), 100%), 1fr));
+[class*="grid-auto-cols-"] {
+  --grid-auto-cols-min-width: 300px;
+  --grid-auto-cols-max-width: 1fr;
+  grid-template-columns: 
+    repeat(auto-fit, minmax(min(var(--grid-auto-cols-min-width), 100%),  /* min with 100% to prevent overflow */
+                            var(--grid-auto-cols-max-width)));
 }
 
 
-.gird-auto-cols-100 {
-  --min-width: 100px;
-}
+.grid-auto-cols-min-100px { --grid-auto-cols-min-width: 100px; }
+.grid-auto-cols-min-200px { --grid-auto-cols-min-width: 200px; }
+.grid-auto-cols-min-300px { --grid-auto-cols-min-width: 300px; }
+.grid-auto-cols-min-400px { --grid-auto-cols-min-width: 300px; }
 
-.gird-auto-cols-200 {
-  --min-width: 200px;
-}
-
-.gird-auto-cols-300 {
-  --min-width: 300px;
-}
+.grid-auto-cols-max-1fr { --grid-auto-cols-max-width: 1fr; }
+.grid-auto-cols-max-05fr { --grid-auto-cols-max-width: 0.5fr; }
+.grid-auto-cols-max-100px { --grid-auto-cols-max-width: 100px; }
+.grid-auto-cols-max-200px { --grid-auto-cols-max-width: 200px; }
+.grid-auto-cols-max-300px { --grid-auto-cols-max-width: 300px; }
+.grid-auto-cols-max-400px { --grid-auto-cols-max-width: 400px; }
 
 
 /*
@@ -142,7 +145,7 @@ footer {
 .icon.hoverable {
   --font-weight: 100;
   font-variation-settings: "wght" var(--font-weight);
-  transition: --font-weight 1000ms ease;
+  transition: --font-weight 200ms ease;
 }
 
 
@@ -150,9 +153,11 @@ footer {
   --font-weight: 700;
 }
 
+
 /*
  * Misc:
  */
+
 
 .clamp-text {
   overflow: hidden;
@@ -166,12 +171,36 @@ footer {
 }
 
 
+small {
+  font-size: 60%;
+}
+
+
 /*
- * Misc:
+ * App specific:
  */
 
 
 .fav {
   color: red;
   font-variation-settings: "FILL" 1 !important;
+}
+
+
+nav {
+  border-bottom: 1px solid gray;
+  margin-bottom: 1em;
+}
+
+footer {
+  margin-top: 0.6em;
+  padding-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  border-top: 1px solid gray;
+  font-size: 90% !important;
+}
+
+footer > * {
+  line-height: 1em;
 }

@@ -11,8 +11,9 @@
   (require '[training.web.state :as state])
 
   (-> @state/app-state
-      :session
-      :user)
+      :resource
+      :training.web.view.artist-page/artists
+      :query)
 
 
 

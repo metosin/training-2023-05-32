@@ -55,7 +55,8 @@
          :credentials "same-origin"
          :redirect (-> opts :redirect (or :follow) (name))
          :body (when-let [body (:body opts)]
-                 (write-transit body))))
+                 (write-transit body))
+         :signal (:signal opts)))
 
 
 (defn request [opts]

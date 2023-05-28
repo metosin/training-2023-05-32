@@ -9,10 +9,7 @@
 (hugsql/register-domain :training.server.domain.account)
 
 
-(defn get-account-id [req]
-  (println "get-account-id:\n"
-           "Request:\n" (pr-str (get-in req [:parameters :path :account-id]))
-           "Session:\n" (pr-str (::session/session req)))
+(defn get-account-id [req] 
   (let [account-id (get-in req [:parameters :path :account-id])]
     (if (= account-id "self")
       (get (::session/session req) "id")
@@ -35,10 +32,16 @@
 (defn update-like [req]
   (let [account-id (get-account-id req)
         target-id  (get-in req [:parameters :path :target-id])
-        like?      (get-in req [:parameters :body :like])]
-    (hugsql/execute! req (if like? ::add-fav ::remove-fav) {:account-id account-id
-                                                            :target-id  target-id})
-    (resp/ok)))
+        like?      (get-in req [:parameters :body :like])
+        n          (hugsql/execute-one! req
+                                        (if like? ::add-fav ::remove-fav)
+                                        {:account-id account-id
+                                         :target-id  target-id})] 
+    (println "UPDATE:" (pr-str n))
+    (resp/ok {:account-id account-id
+              :target-id  target-id
+              :like?      like?
+              :updated?   (pos? (:next.jdbc/update-count n))})))
 
 
 (def routes

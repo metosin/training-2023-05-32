@@ -56,23 +56,23 @@ services:
       - caddy_config:/config
 
 
-  # Run node process with code compiled by shadow-cljs for cljs repl:
-  node:
-    image: training:dev
-    build: ./docker
-    init: true
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    entrypoint: /bin/socat-tunnel.sh
-    command: ["node", "index.js"]
-    restart: always
-    volumes:
-      - ./target/node:/app
-      - ./node_modules:/app/node_modules
-    env_file:
-      - ./.env
-    environment:
-      - POSTGRES_HOST=db
+# # Run node process with code compiled by shadow-cljs for cljs repl:
+# node:
+#   image: training:dev
+#   build: ./docker
+#   init: true
+#   extra_hosts:
+#     - "host.docker.internal:host-gateway"
+#   entrypoint: /bin/socat-tunnel.sh
+#   command: ["node", "index.js"]
+#   restart: always
+#   volumes:
+#     - ./target/node:/app
+#     - ./node_modules:/app/node_modules
+#   env_file:
+#     - ./.env
+#   environment:
+#     - POSTGRES_HOST=db
 
 
 volumes:

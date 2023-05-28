@@ -1,7 +1,6 @@
 (ns training.web.view.main-view
   (:require [helix.core :as hx :refer [defnc $]]
             [helix.dom :as d]
-            [training.web.util :as util]
             [training.web.routing :as routing]
             [training.web.session :as session]
             [training.web.view.nav-bar :as nav]
@@ -22,12 +21,13 @@
 
 (defnc Footer [_]
   (d/footer
-   (d/small "Copyright © 2023 " ($ ExtLink {:href "https://metosin.fi/"} "Metosin Ltd"))
-   (d/br)
-   (d/small "MusicBrainz DB licensed under "
-            ($ ExtLink {:href "https://creativecommons.org/publicdomain/zero/1.0/"} "CC0")
-            " by "
-            ($ ExtLink {:href "https://musicbrainz.org/doc/MusicBrainz_Database"} "MusicBrainz.org"))))
+   (d/div
+    (d/small "Copyright © 2023 " ($ ExtLink {:href "https://metosin.fi/"} "Metosin Ltd")))
+   (d/div
+    (d/small "MusicBrainz DB licensed under "
+             ($ ExtLink {:href "https://creativecommons.org/publicdomain/zero/1.0/"} "CC0")
+             " by "
+             ($ ExtLink {:href "https://musicbrainz.org/doc/MusicBrainz_Database"} "MusicBrainz.org")))))
 
 
 (defnc Main [_]
