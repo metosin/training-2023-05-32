@@ -19,8 +19,9 @@
                        (p/then (fn [{:keys [success? message]}]
                                  (set-state (if success? :success :fail))
                                  (println "success" success? ":" message)))))}
+     (d/h3 {:class ["mt-3em"]} "Login:")
      (d/div
-      {:class "grid"}
+      {:class "mt-3em grid"}
       (d/label
        {:for "username"}
        "User:"

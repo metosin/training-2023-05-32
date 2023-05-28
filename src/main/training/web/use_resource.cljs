@@ -71,7 +71,7 @@
                             :body      nil
                             :error     {:status (:status resp)}
                             :refreshed (u/now)
-                            :ttl       nil}))))
+                            :ttl       (ttl resp)}))))
         (p/catch (fn [e]
                    (println "refresh-resource!" id "error" (j/get e :message))
                    (when-not (= (j/get e :message) "AbortError")

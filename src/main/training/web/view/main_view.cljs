@@ -5,13 +5,15 @@
             [training.web.session :as session]
             [training.web.view.nav-bar :as nav]
             [training.web.view.not-found-page :as not-found]
-            [training.web.view.login :as login]))
+            [training.web.view.login :as login]
+            [training.web.util :refer [icon]]))
 
 
 (defnc Header [_]
   (let [session-status (session/use-session [:status])]
-    (when (= session-status :ok)
-      ($ nav/NavBar))))
+    (if (= session-status :ok)
+      ($ nav/NavBar)
+      (d/div))))
 
 
 (defnc ExtLink [{:keys [href children]}]
@@ -34,7 +36,8 @@
   (let [current-route  (routing/use-route)
         session-status (session/use-session [:status])]
     (case session-status
-      nil (d/div "Loading....")
+      nil (d/div ($ icon {:class "animate-rotate"
+                          :name  "sync"}))
       :error (d/div "Error!")
       :no ($ login/LoginView)
       :ok ($ (-> current-route :data :view (or not-found/NotFoundPage)) {:route current-route}))))

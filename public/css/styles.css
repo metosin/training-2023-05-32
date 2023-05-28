@@ -61,24 +61,14 @@ p, h1, h2, h3, h4, h5, h6 {
  */
 
 
-.gap-1em {
-  gap: 1em;
-}
+.gap-1em { gap: 1em; }
+.gap-1em-2em { gap: 1em 2em; }
+.gap-2em-1em { gap: 2em 1em; }
+.gap-05em { gap: 0.5em; }
 
-
-.gap-1em-2em {
-  gap: 1em 2em;
-}
-
-
-.gap-2em-1em {
-  gap: 2em 1em;
-}
-
-
-.gap-05em {
-  gap: 0.5em;
-}
+.mt-1em { margin-top: 1em; }
+.mt-2em { margin-top: 2em; }
+.mt-3em { margin-top: 3em; }
 
 
 /*
@@ -212,4 +202,22 @@ footer > * {
   gap:         1em;
   max-width:   30em;
   margin:      4em auto; 
+}
+
+.about-page a::after {
+  font-family: "Material Symbols Outlined";
+  font-feature-settings: "liga" 1;
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-size: 80%;
+  content: 'open_in_new';
+}
+
+.animate-rotate {
+  animation: 2s linear infinite rotate-full-turn;
+}
+
+@keyframes rotate-full-turn {
+  from { transform: rotate(0); }
+  to { transform: rotate(-1turn); }
 }
