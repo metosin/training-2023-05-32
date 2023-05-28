@@ -97,7 +97,9 @@ Tietomalli on seuraavan muotoinen:
 
 ## TODO
 
-[ ] - Inventory DB
-[ ] - Shopping cart, Redis
 [ ] - Tests
 [ ] - I/O out
+[ ] - Show album genres
+[ ] - Show artist genres
+[ ] - Show album info w/ tracks
+[ ] - Search albums by genre

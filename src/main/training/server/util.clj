@@ -14,10 +14,9 @@
 
 (defn checksummer []
   (let [adler (Adler32.)]
-    (fn checksum
-      ([data]
-       (.update adler (.getBytes (str data)))
-       checksum)
+    (fn
+      ([data] (.update adler (.getBytes (str data)))
+              data)
       ([] (str (.getValue adler))))))
 
 

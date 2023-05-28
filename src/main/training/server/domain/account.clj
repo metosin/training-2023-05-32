@@ -3,7 +3,9 @@
             [training.server.db.tx :as tx]
             [training.server.db.hug :as hugsql]
             [training.server.api.session :as session]
-            [training.server.api.session.middleware :as sm]))
+            [training.server.api.session.middleware :as sm]
+            [training.server.http.cache :as cache]
+            [training.server.util :as util]))
 
 
 (hugsql/register-domain :training.server.domain.account)
@@ -22,11 +24,18 @@
 
 
 (defn get-fav-by-account-id [req]
-  (let [account-id (get-account-id req)]
-    ; TODO: assert calling user is same as account-id, OR caller is admin
-    (->> (hugsql/execute! req ::get-fav-by-account-id {:account-id account-id})
-         (map :fav/target)
-         (resp/ok))))
+  ; TODO: assert calling user is same as account-id, OR caller is admin
+  (let [account-id (get-account-id req) 
+        checksum   (util/checksummer) 
+        favs (->> (hugsql/execute! req ::get-fav-by-account-id {:account-id account-id})
+                  (map :fav/target)
+                  (map checksum)
+                  (doall))
+          etag (checksum)] 
+    (if (= etag (get-in req [:headers cache/if-none-match]))
+      (resp/not-modified)
+      (-> (resp/ok favs)
+          (update :headers assoc cache/etag etag)))))
 
 
 (defn update-like [req]

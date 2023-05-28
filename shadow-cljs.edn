@@ -6,7 +6,8 @@
                  :dev        {:closure-defines {training.web.app/DEV true}}
                  :release    {:closure-defines {training.web.app/DEV false}}
                  :devtools   {:before-load training.web.app/stop
-                              :after-load  training.web.app/start}}
+                              :after-load  training.web.app/start
+                              :watch-dir   "public"}}
           :test {:target     :node-test
                  :output-to  "target/test/index.js"
                  :output-dir "target/test/js"

@@ -204,3 +204,12 @@ footer {
 footer > * {
   line-height: 1em;
 }
+
+.about-page {
+  display:     flex;
+  flex-flow:   column;
+  align-items: center;
+  gap:         1em;
+  max-width:   30em;
+  margin:      4em auto; 
+}
