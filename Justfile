@@ -25,6 +25,11 @@ test: clj-test cljs-test
   @echo "All tests run"
 
 
+# Run clj tests and watch for changes
+watch:
+  clojure -X:loom:test:watch-test
+
+
 # Launch bash shell on container
 sh +args='bash':
   @docker run                                                  \

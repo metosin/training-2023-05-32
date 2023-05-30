@@ -69,9 +69,9 @@
 
 
 (defnc ArtistInfo [{:keys [artist]}]
-  (let [favs    (use-resource ::favs "/api/account/self/like" {:parser set})
+  (let [favs    (use-resource ::favs "/api/account/like" {:parser set})
         set-fav (fn [id fav?]
-                  (resource/mutate favs {:uri    "/api/account/self/like/:album-id"
+                  (resource/mutate favs {:uri    "/api/account/like/:album-id"
                                          :params {:album-id id}
                                          :body   {:like fav?}}))]
     (<> (d/div (d/b (:artist/name artist)))

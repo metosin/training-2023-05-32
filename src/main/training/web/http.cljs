@@ -73,17 +73,12 @@
                                    :headers headers 
                                    :body    body 
                                    ::request opts})))
-                    (do (js/console.warn "unsupported content-type:"
-                                         content-type
-                                         "from"
-                                         (-> opts :method (name) (str/upper-case))
-                                         (-> opts :uri))
-                        (-> (j/call resp :text) 
-                            (p/then (fn [body] 
-                                      {:status  (j/get resp :status) 
-                                       :headers headers 
-                                       :body    body 
-                                       ::request opts}))))))))))
+                    (-> (j/call resp :text) 
+                        (p/then (fn [body] 
+                                  {:status  (j/get resp :status) 
+                                   :headers headers 
+                                   :body    body 
+                                   ::request opts})))))))))
 
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}

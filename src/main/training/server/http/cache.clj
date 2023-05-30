@@ -1,11 +1,14 @@
-(ns training.server.http.cache)
+(ns training.server.http.cache
+  (:require [training.server.fn-bang :refer [defn!]]
+            [training.server.fx :as fx]
+            [ring.util.http-response :as resp]))
 
 
-(def ^:const cache-control "cache-control")
-(def ^:const no-store "no-store")
-(def ^:const no-cache "no-cache")
-(def ^:const etag "etag")
-(def ^:const if-none-match "if-none-match")
+(def ^:const header-cache-control "cache-control")
+(def ^:const header-etag "etag")
+(def ^:const value-no-store "no-store")
+(def ^:const value-no-cache "no-cache")
+(def ^:const value-if-none-match "if-none-match")
 
 
 ;;
@@ -23,10 +26,19 @@
     (let [resp    (handler req)
           headers (:headers resp)]
       (when resp
-        (if-not (contains? headers cache-control)
-          (update resp :headers assoc cache-control
-                  (if (or (contains? headers etag)
+        (if-not (contains? headers header-cache-control)
+          (update resp :headers assoc header-cache-control
+                  (if (or (contains? headers header-etag)
                           (= (:status resp) 304))
-                    no-cache
-                    no-store))
+                    value-no-cache
+                    value-no-store))
           resp)))))
+
+
+
+;; FIXME:
+(defn! handle-etag [ctx]
+  (let [etag (str (hash (:body ctx)))]
+    (if (= etag (get-in ctx [::fx/request :headers value-if-none-match]))
+      (resp/not-modified)
+      (assoc-in ctx [:headers header-etag] etag))))

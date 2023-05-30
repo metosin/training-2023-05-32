@@ -1,4 +1,4 @@
-{:deps   {:aliases [:dev :test]}
+{:deps   {:aliases [:dev :loom :test]}
  :builds {:web  {:target     :browser
                  :output-dir "public/js"
                  :asset-path "js"

@@ -221,3 +221,20 @@ footer > * {
   from { transform: rotate(0); }
   to { transform: rotate(-1turn); }
 }
+
+
+.login-hint {
+  margin-top: 5em;
+  font-size: 0.6rem;
+  color: gray;
+}
+
+.login-hint ul {
+  color: gray;
+  font-size: 0.6rem;
+  margin-top: 0.5em;
+}
+
+.login-hint li:hover > * {
+  border-bottom: 1px dashed gray;
+}

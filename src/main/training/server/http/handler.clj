@@ -1,6 +1,7 @@
 (ns training.server.http.handler
   (:require  [clojure.string :as str]
              [clojure.tools.logging :as log]
+             [clojure.walk]
              [muuntaja.core]
              [jsonista.core :as json]
              [ring.util.http-response :as resp]
@@ -13,7 +14,9 @@
              [reitit.ring.middleware.exception :as exception]
              [training.server.http.cache :as cache]
              [training.server.redis.pool :as redis]
-             [training.server.api.session.middleware :as session]))
+             [training.server.api.session.middleware :as session]
+             ; FIXME:
+             [training.server.fx :as fx]))
 
 
 (defn- wrap-system [handler system]
@@ -29,10 +32,21 @@
   (handler e req))
 
 
+(defn- deref-var-handlers [routes]
+  (clojure.walk/prewalk (fn [v]
+                          (if (var? v)
+                            (deref v)
+                            v))
+                        routes))
 
-(defn make-handler [routes system]
+
+(defn make-handler [{mode :mode} routes system]
   (ring/ring-handler
-   (ring/router routes
+   (ring/router (if (= mode :dev)
+                  (do (log/warn "make-handler: DEV mode")
+                      routes)
+                  (do (log/info "make-handler: PROD mode")
+                      (deref-var-handlers routes)))
                 {:data {:muuntaja   muuntaja.core/instance
                         :coercion   reitit.coercion.malli/coercion
                         :middleware [cache/cache-middleware
@@ -47,7 +61,8 @@
                                                                                    exception-handler))
                                      [wrap-system system]
                                      [redis/redis-middleware]
-                                     [session/session-middleware]]}})
+                                     [session/session-middleware]
+                                     [fx/fx-middleware]]}})
    (constantly (-> {:type    :error
                     :message "route not found"}
                    (json/write-value-as-string)

@@ -1,0 +1,2 @@
+{:lint-as {training.server.fn-bang/fn! clojure.core/fn
+           training.server.fn-bang/defn! clojure.core/defn}}

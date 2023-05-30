@@ -99,6 +99,7 @@ Tietomalli on seuraavan muotoinen:
 
 [ ] - Tests
 [ ] - I/O out
+[ ] - Setup instructions
 [ ] - Show album genres
 [ ] - Show artist genres
 [ ] - Show album info w/ tracks

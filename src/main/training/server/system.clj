@@ -21,7 +21,7 @@
         redis   (redis/make-pool (:redis config))
         system  {:ds    ds
                  :redis redis}
-        handler (handler/make-handler routes/routes system)
+        handler (handler/make-handler (:handler config) routes/routes system)
         http    (http/start-server (:http config) handler)]
     (log/info "System up!")
     {:ds    ds

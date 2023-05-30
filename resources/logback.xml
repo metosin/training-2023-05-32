@@ -11,4 +11,5 @@
   </root>
   <logger name="training" level="DEBUG"/>
   <logger name="user" level="DEBUG"/>
+  <logger name="loom" level="DEBUG"/>
 </configuration>

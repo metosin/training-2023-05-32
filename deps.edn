@@ -47,12 +47,16 @@
            :dev        {:extra-paths ["src/dev"]
                         :extra-deps  {org.clojure/tools.namespace {:mvn/version "1.4.4"}
                                       binaryage/devtools          {:mvn/version "1.0.7"}
-                                      thheller/shadow-cljs        {:mvn/version "2.23.3"}}
+                                      thheller/shadow-cljs        {:mvn/version "2.23.3"}
+                                      zprint/zprint               {:mvn/version "1.2.6"}
+                                      io.aviso/pretty             {:mvn/version "1.4.3"}
+                                      hashp/hashp                 {:mvn/version "0.2.2"}}
                         :jvm-opts    ["-Dmode=dev"]}
 
            :test       {:extra-paths ["src/test"]
                         :extra-deps  {lambdaisland/kaocha        {:mvn/version "1.84.1335"}
-                                      nubank/matcher-combinators {:mvn/version "3.8.5"}}}
+                                      nubank/matcher-combinators {:mvn/version "3.8.5"}
+                                      org.flywaydb/flyway-core   {:mvn/version "9.19.1"}}}
 
            :watch-test {:exec-fn   kaocha.runner/exec-fn
                         :exec-args {:watch?     true
