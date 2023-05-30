@@ -12,13 +12,15 @@
 
   (-> @state/app-state
       :resource
-      :training.web.view.artist-page/artists
-      :query)
+      :training.web.view.artist-page/favs
+      :body)
 
-
-
-
-
+  (swap! state/app-state update-in
+         [:resource
+          :training.web.view.artist-page/favs
+          :body]
+         disj
+         "e464e167-83ab-3b59-88bd-262cf552056e")
 
   ;
   )

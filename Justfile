@@ -1,5 +1,5 @@
 set dotenv-load := true
-project := "advanced-clojure-2023-05-31"
+project := "training-2023-05-32"
 
 
 help:

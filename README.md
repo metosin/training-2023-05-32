@@ -1,80 +1,24 @@
 # Advanced Clojure koulutus 2023-05-31
 
-Varmista että sinulla on kaikki tässä esitellyt työkalut asennettuna ennen koulutusta.
+Varmista että sinulla on kaikki [tässä esitellyt esitehtävät](https://github.com/metosin/advanced-clojure-2023-05-31-setup) suoritettuna ennen koulutusta.
 
-## Työkalujen asennus
-
-Varmista että sinulla on seuraavat työkalut asennettuna:
-
-- Java versio >= 19
-
-  - Clojure dokumentaatio suosittelee Eclipse Temurin buildia
-  - Löytyy täältä: https://adoptium.net/en-GB/temurin/releases/?version=20
-  - Kätevä työkalu eri JDK (ja muidenkin SDK) versioiden hallintaan: [https://sdkman.io/](https://sdkman.io/)
-
-- Clojure
-
-  - Seuraa asennusohjeet täältä: [https://clojure.org/guides/install_clojure](https://clojure.org/guides/install_clojure)
-
-- NodeJS
-
-  - Tuoreahko versio NodeJS:stä
-  - Asennus ohjeet ja lataukset löytyy täältä: [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
-  - MacOS riittää `brew install nodejs`
-
-- Docker
-
-  - [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
-
-- Kun edellä mainitut työkalut on asennettu pitää komentoriviltä toimia seuraavat komennot:
-
-  ```bash
-  $ java -version
-  openjdk version "20" 2023-03-21
-  OpenJDK Runtime Environment Temurin-20+36 (build 20+36)
-  OpenJDK 64-Bit Server VM Temurin-20+36 (build 20+36, mixed mode, sharing)
-
-  $ clj --version
-  Clojure CLI version 1.11.1.1273
-
-  $ node --version
-  v20.1.0
-
-  $ npm --version
-  9.6.4
-
-  $ docker version
-  Client:
-    Cloud integration: v1.0.31
-    Version:           23.0.5
-    ...
-  ```
-
-  - Asennetut versiot voivat poiketa ylläolevasta jonkin verran
-
-## Esitehtävä
-
-Varmistetaan vielä että kaikki toimii.
+## Aloitus
 
 - Kloonaa tämä projekti omalle koneellesi
   ```bash
-  git clone git@github.com:metosin/training-2023-05-32.git
+  $ git clone git@github.com:metosin/training-2023-05-32.git
+  $ cd training-2023-05-32
   ```
-- Aja alustus
+- Käynnistä palvelut
   ```bash
-  just init
+  $ docker compose up
   ```
-
-Jos kaikki meni putkeen niin työkalut ovat kunnossa!
-
-## Dataset
-
-Esimerkit käyttävät julkista [MusicBrainz](https://musicbrainz.org) musiikin tietovarastoa.
-Koko MusicBrainz aineisto on todella suuri ja rakenteeltaan melko monimutkainen. Siksi
-tässä käytetään aineiston osaa joka on jäsennelty alkuperäistä yksinkertaisemmin.
-
-Tietomalli on seuraavan muotoinen:
-![](./doc/MusicBrainz-subset-ERD.png)
+- Avaa projekti käyttämääsi IDE:een ja käynnistä REPL
+- Aja REPL:ssä komento:
+  ```
+  user=> (reset)
+  ```
+- Avaa selain http://localhost:8000
 
 ## Links
 
@@ -94,13 +38,3 @@ Tietomalli on seuraavan muotoinen:
 - [Awesome Clojure libs also](https://github.com/razum2um/awesome-clojure)
 - [Awesome ClojureScript libs](https://github.com/hantuzun/awesome-clojurescript)
 - [Metosin in GitHub](https://github.com/metosin)
-
-## TODO
-
-[ ] - Tests
-[ ] - I/O out
-[ ] - Setup instructions
-[ ] - Show album genres
-[ ] - Show artist genres
-[ ] - Show album info w/ tracks
-[ ] - Search albums by genre

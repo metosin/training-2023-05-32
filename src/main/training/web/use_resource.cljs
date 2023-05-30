@@ -35,7 +35,6 @@
 
 (defn abort-refresh! [resource]
   (when-let [old-abort-conroller (:abort-conroller resource)]
-    (println "refresh-resource! aborting pending update")
     (j/call old-abort-conroller :abort))
   resource)
 
@@ -50,7 +49,6 @@
                        :headers (when etag {"if-none-match" etag})
                        :signal  (j/get new-abort-conroller :signal)})
         (p/then (fn [resp]
-                  (println "refresh-resource!" id "status" (:status resp))
                   (swap! state/app-state update-in [:resource id] merge
                          (case (:status resp)
                            200 {:status    :ok
@@ -73,7 +71,6 @@
                             :refreshed (u/now)
                             :ttl       (ttl resp)}))))
         (p/catch (fn [e]
-                   (println "refresh-resource!" id "error" (j/get e :message))
                    (when-not (= (j/get e :message) "AbortError")
                      (swap! state/app-state update-in [:resource id] merge
                             {:status    :error

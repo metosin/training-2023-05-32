@@ -12,9 +12,11 @@
 
 
 (deftest get-account-by-id-test
+
   (testing "returns nil when account is not found"
     (let [ctx {:system {:ds *test-db-ds*}}]
       (is (nil? (account.core/get-account-by-id ctx "foo")))))
+
   (testing "returns account details when account is found"
     (let [ctx        {:system {:ds *test-db-ds*}}
           tina       (jdbc/execute-one! *test-db-ds* ["select account.id from epes.account where account.username = ?" "tina"])
@@ -29,10 +31,12 @@
 
 
 (deftest find-account-by-username-password-test
+
   (testing "returns nil when account is not found"
     (let [ctx {:system {:ds *test-db-ds*}}]
       (is (nil? (account.core/find-account-by-username-password ctx "foo" "foo")))
       (is (nil? (account.core/find-account-by-username-password ctx "tina" "foo")))))
+
   (testing "returns account details when account is found"
     (let [ctx     {:system {:ds *test-db-ds*}}
           account (account.core/find-account-by-username-password ctx "tina" "tina")]

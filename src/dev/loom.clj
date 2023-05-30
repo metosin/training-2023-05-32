@@ -141,8 +141,8 @@
           (->> (repeat 1000000 (fn [] (Thread/sleep 1000)))
                (map (fn [^Runnable task] (.submit ex task)))
                (dorun)))
+        (log/info "-- Virtual threads executor: Done ------------------------")
         (let [end (System/currentTimeMillis)]
-          (log/info "-- Virtual threads executor: Done ------------------------")
           (log/info "-- Duration" (- end start) "ms"))))
 
 
@@ -152,8 +152,8 @@
           (->> (repeat 10000 (fn [] (Thread/sleep 1000)))
                (map (fn [^Runnable task] (.submit ex task)))
                (dorun)))
+        (log/info "-- Platform threads executor: Done ------------------------")
         (let [end (System/currentTimeMillis)]
-          (log/info "-- Platform threads executor: Done ------------------------")
           (log/info "-- Duration" (- end start) "ms"))))
 
   ;

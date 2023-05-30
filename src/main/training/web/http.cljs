@@ -20,7 +20,7 @@
 (def transit-content-type "application/transit+json")
 
 
-(defn- headers->map [^js/Headers headers]
+(defn- headers-obj->clj-map [^js/Headers headers]
   (->> (j/call headers :entries)
        (map (fn [[k v]] [k v]))
        (into {})))
@@ -30,20 +30,10 @@
   (when (seq query)
     (str "?" (->> query
                   (map (fn [[k v]]
-                         (str (js/encodeURIComponent (name k)) "=" (js/encodeURIComponent (str v)))))
+                         (str (js/encodeURIComponent (name k)) 
+                              "=" 
+                              (js/encodeURIComponent (str v)))))
                   (str/join "&")))))
-
-
-(defn- http-error!
-  ([resp opts] (http-error! resp opts nil))
-  ([^js resp {:keys [method uri query]} message]
-   (throw (doto (js/Error.)
-            (j/assoc! :message (or message (str "HTTP " method " " uri " -> " (j/get resp :status))))
-            (j/assoc! :type "http-error")
-            (j/assoc! :status (j/get resp :status))
-            (j/assoc! :uri uri)
-            (j/assoc! :method method)
-            (j/assoc! :query query)))))
 
 
 (defn fetch-opts [opts]
@@ -63,22 +53,18 @@
   (-> (js/fetch (str (:uri opts) (query-string opts))
                 (fetch-opts opts))
       (p/then (fn [^js resp]
-                (let [headers      (headers->map (j/get resp :headers))
-                      content-type (get headers "content-type" "")]
-                  (if (str/starts-with? content-type transit-content-type)
-                    (-> (j/call resp :text) 
-                        (p/then read-transit) 
-                        (p/then (fn [body] 
-                                  {:status  (j/get resp :status) 
-                                   :headers headers 
-                                   :body    body 
-                                   ::request opts})))
-                    (-> (j/call resp :text) 
-                        (p/then (fn [body] 
-                                  {:status  (j/get resp :status) 
-                                   :headers headers 
-                                   :body    body 
-                                   ::request opts})))))))))
+                (let [headers      (-> (j/get resp :headers)
+                                       (headers-obj->clj-map))
+                      content-type (get headers "content-type" "")
+                      transit? (str/starts-with? content-type transit-content-type)]
+                  (-> (j/call resp :text) 
+                      (p/then (fn [body] 
+                                {:status  (j/get resp :status) 
+                                 :headers headers 
+                                 :body    (if transit? 
+                                            (read-transit body) 
+                                            body) 
+                                 ::request opts}))))))))
 
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
