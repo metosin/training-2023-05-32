@@ -20,6 +20,10 @@ Varmista että sinulla on kaikki [tässä esitellyt esitehtävät](https://githu
   ```
 - Avaa selain http://localhost:8000
 
+## Tietovarasto
+
+Mukana tuleva PostgreSQL tietokanta sisältää aineistoa MusicBrainz.org palvelusta. Tietokannan rakenne on [kuvattu tässä](./doc/MusicBrainz-subset-ERD.png). Lisää tietoa [ABOUT.md](./public/ABOUT.md) tiedostossa.
+
 ## Links
 
 - [Try Clojure](https://tryclojure.org) ClojureScript REPL on web
