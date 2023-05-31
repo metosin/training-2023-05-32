@@ -2,13 +2,14 @@
   (:require [clojure.tools.namespace.repl :as tnr]
             [clojure.tools.logging :as log]
             [kaocha.repl :as k]
-            [zprint.core :as zprint]
-            [io.aviso.repl :as aviso]))
+            [zprint.core :as zprint]))
 
 
-(aviso/install-pretty-exceptions)
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
+(def zp zprint/czprint)
 
 
+; Our system:
 (defonce system nil)
 
 
@@ -44,21 +45,3 @@
 (defn run-all-tests []
   (run-unit-tests))
 
-
-#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
-(def zp zprint/czprint)
-
-
-(comment
-
-  (stop)
-  (require '[s-exp.mina :as mina])
-  (def nima (mina/start! (fn [req]
-                           (log/info "REQ:" (keys req))
-                           {:status 200
-                            :body   "hello"})
-                         {:port 8888}))
-  (mina/stop! nima)
-
-  ;
-  )
